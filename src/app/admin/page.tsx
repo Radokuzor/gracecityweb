@@ -511,8 +511,8 @@ function Dashboard({ session, onLogout }: { session: Session; onLogout: () => vo
           <Image src="/Grace-Black.png" alt="Grace City" width={100} height={28} style={{ objectFit: "contain", filter: "invert(1)" }} />
           <span style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.4)", letterSpacing: "0.08em", textTransform: "uppercase" }}>Admin</span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <span style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.6)" }}>{session.user.email}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem", minWidth: 0 }}>
+          <span style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.6)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "30vw" }}>{session.user.email}</span>
           <button
             onClick={onLogout}
             style={{ background: "rgba(255,255,255,0.1)", border: "none", color: "#fff", padding: "0.375rem 0.875rem", fontSize: "0.8rem", cursor: "pointer", fontWeight: 600 }}
@@ -523,15 +523,15 @@ function Dashboard({ session, onLogout }: { session: Session; onLogout: () => vo
       </div>
 
       {/* Tab nav */}
-      <div style={{ background: "#fff", borderBottom: "1px solid #e8e8e8", padding: "0 1.5rem", display: "flex", gap: 0 }}>
+      <div style={{ background: "#fff", borderBottom: "1px solid #e8e8e8", display: "flex", gap: 0, overflowX: "auto" }}>
         {tabBtn("submissions", "Form Submissions")}
         {tabBtn("livestreams", "Livestreams")}
         {tabBtn("events", "Events")}
       </div>
 
       {/* Content */}
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "2rem 1.5rem" }}>
-        <div style={{ background: "#fff", padding: "1.5rem", border: "1px solid #e8e8e8" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "1.5rem 1rem" }}>
+        <div style={{ background: "#fff", padding: "1.25rem", border: "1px solid #e8e8e8" }}>
           {tab === "submissions" && <SubmissionsPanel />}
           {tab === "livestreams" && <LivestreamsPanel />}
           {tab === "events" && <EventsPanel />}

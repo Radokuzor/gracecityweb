@@ -1,236 +1,169 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const contentBlocks = [
-  {
-    title: "Plan a Visit",
-    description: "We would love to meet you. Come join us any Sunday at 10am.",
-    href: "/next-steps",
-    image: "/images/2500w-164-roc09050-jpg.jpg",
-  },
-  {
-    title: "Our Staff",
-    description: "Meet the leaders and team who serve our community.",
-    href: "/staff-leaders",
-    image: "/images/2500w-184-roc09140-jpg.jpg",
-  },
-  {
-    title: "Events Calendar",
-    description: "Stay up to date with everything happening at Grace City.",
-    href: "/calendar",
-    image: "/images/2500w-200-roc09255-jpg.jpg",
-  },
-  {
-    title: "Get Involved",
-    description: "Discover ministries and ways to make a difference.",
-    href: "/next-steps",
-    image: "/images/2500w-202-roc09264-jpg.jpg",
-  },
-];
-
 export default function HomePage() {
   return (
     <>
-      {/* Hero */}
-      <section style={{ position: "relative", height: "92vh", minHeight: 520, overflow: "hidden" }}>
+      {/* ── Hero ── */}
+      <section className="gc-hero">
         <Image
           src="/images/2500w-31-roc08610-jpg.jpg"
           alt="BLW Grace City community"
           fill
           priority
-          style={{ objectFit: "cover", objectPosition: "center" }}
+          style={{ objectFit: "cover", objectPosition: "center top" }}
         />
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.25) 100%)",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            textAlign: "center",
-            padding: "0 1.5rem",
-          }}
-        >
-          <p
-            style={{
-              fontSize: "0.875rem",
-              fontWeight: 600,
-              letterSpacing: "0.15em",
-              textTransform: "uppercase",
-              color: "rgba(255,255,255,0.8)",
-              marginBottom: "1.25rem",
-            }}
-          >
-            BLW Grace City &middot; Houston, TX
-          </p>
-          <h1
-            style={{
-              fontSize: "clamp(2.25rem, 6vw, 4.5rem)",
-              fontWeight: 800,
-              color: "#fff",
-              lineHeight: 1.1,
-              maxWidth: 820,
-              marginBottom: "1.5rem",
-            }}
-          >
-            Reaching and Equipping Tomorrow&apos;s Leaders
+        <div className="gc-hero-overlay" />
+        <div className="gc-hero-content">
+          <h1 className="gc-hero-h1">
+            Welcome to<br />BLW Grace City
           </h1>
-          <p
-            style={{
-              fontSize: "clamp(1rem, 2vw, 1.25rem)",
-              color: "rgba(255,255,255,0.85)",
-              maxWidth: 560,
-              lineHeight: 1.65,
-              marginBottom: "2.5rem",
-            }}
-          >
-            A community inspiring and equipping young people to know and express God&apos;s love.
+          <p className="gc-hero-sub">
+            Reaching and Equipping Tomorrow&apos;s Leaders
           </p>
-          <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", justifyContent: "center" }}>
-            <Link
-              href="/next-steps"
-              style={{
-                background: "#fff",
-                color: "#0a0a0a",
-                padding: "0.875rem 2rem",
-                fontWeight: 700,
-                fontSize: "0.9rem",
-                textDecoration: "none",
-                letterSpacing: "0.04em",
-                textTransform: "uppercase",
-              }}
-            >
-              Plan a Visit
-            </Link>
-            <Link
-              href="/next-steps"
-              style={{
-                border: "2px solid rgba(255,255,255,0.8)",
-                color: "#fff",
-                padding: "0.875rem 2rem",
-                fontWeight: 700,
-                fontSize: "0.9rem",
-                textDecoration: "none",
-                letterSpacing: "0.04em",
-                textTransform: "uppercase",
-              }}
-            >
-              Get Involved
-            </Link>
+          <div className="gc-hero-btns">
+            <Link href="/next-steps" className="gc-btn-primary">Plan a Visit</Link>
+            <Link href="/next-steps" className="gc-btn-outline-white">Get Involved</Link>
           </div>
         </div>
       </section>
 
-      {/* Service Info Band */}
-      <section style={{ background: "#0a0a0a", padding: "2rem 1.5rem" }}>
-        <div
-          style={{
-            maxWidth: 1200,
-            margin: "0 auto",
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "2rem 4rem",
-            textAlign: "center",
-          }}
-        >
-          <div>
-            <p style={{ fontSize: "0.75rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.5)", marginBottom: "0.25rem" }}>
-              Service Time
-            </p>
-            <p style={{ fontSize: "1.25rem", fontWeight: 700, color: "#fff" }}>Sundays at 10:00 a.m.</p>
+      {/* ── Service Info Band ── */}
+      <section className="gc-service-band">
+        <div className="gc-service-band-inner">
+          <div className="gc-service-item">
+            <span className="gc-label">Service Time</span>
+            <span className="gc-service-value">Sundays at 10:00 a.m.</span>
           </div>
-          <div>
-            <p style={{ fontSize: "0.75rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.5)", marginBottom: "0.25rem" }}>
-              Location
-            </p>
-            <p style={{ fontSize: "1rem", fontWeight: 500, color: "#fff" }}>11755 West Little York Rd, Suite 201</p>
-            <p style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.6)" }}>Houston, Texas 77041</p>
+          <div className="gc-service-divider" />
+          <div className="gc-service-item">
+            <span className="gc-label">Location</span>
+            <span className="gc-service-value">11755 West Little York Rd, Suite 201</span>
+            <span className="gc-service-sub">Houston, Texas 77041</span>
           </div>
-          <Link
-            href="/next-steps"
-            style={{
-              border: "1px solid rgba(255,255,255,0.4)",
-              color: "#fff",
-              padding: "0.625rem 1.5rem",
-              fontSize: "0.875rem",
-              fontWeight: 600,
-              textDecoration: "none",
-              letterSpacing: "0.04em",
-            }}
-          >
-            Let us know you&apos;re coming &rarr;
+          <div className="gc-service-divider" />
+          <Link href="/next-steps" className="gc-btn-outline-dim">
+            Plan A Visit &rarr;
           </Link>
         </div>
       </section>
 
-      {/* Mission Section */}
-      <section style={{ padding: "5rem 1.5rem", background: "#fff" }}>
-        <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
-          <p style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "#9a9a9a", marginBottom: "1.5rem" }}>
-            Our Mission
+      {/* ── Mission / Welcome ── */}
+      <section className="gc-section gc-section-white">
+        <div className="gc-container gc-text-center">
+          <p className="gc-eyebrow">Welcome</p>
+          <h2 className="gc-section-h2">Making a Difference in Houston</h2>
+          <p className="gc-section-body" style={{ maxWidth: 680, margin: "0 auto 2.5rem" }}>
+            We exist to inspire and equip young people to know and express God&apos;s love within
+            their communities — through discipleship, mentorship, and service.
+            As part of the Believers&apos; LoveWorld Nation, we are reaching the nations
+            and demonstrating the character of the Spirit.
           </p>
-          <h2 style={{ fontSize: "clamp(1.75rem, 4vw, 2.75rem)", fontWeight: 700, lineHeight: 1.25, color: "#0a0a0a", marginBottom: "1.5rem" }}>
-            Raising a Generation for Jesus
-          </h2>
-          <p style={{ fontSize: "1.125rem", color: "#4a4a4a", lineHeight: 1.8, maxWidth: 680, margin: "0 auto" }}>
-            We exist to inspire and equip young people to know and express God&apos;s love within their communities through discipleship, mentorship, and service. As part of the Believers&apos; LoveWorld Nation, we are reaching the nations and demonstrating the character of the Spirit.
-          </p>
+          <div className="gc-btn-row">
+            <Link href="/next-steps" className="gc-btn-dark">Plan a Visit</Link>
+            <Link href="/next-steps" className="gc-btn-outline-dark">Get Involved</Link>
+          </div>
         </div>
       </section>
 
-      {/* 2x2 Content Blocks */}
-      <section>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}>
-          {contentBlocks.map((block) => (
-            <Link
-              key={block.title}
-              href={block.href}
-              style={{ position: "relative", display: "block", overflow: "hidden", aspectRatio: "4/3", textDecoration: "none" }}
-            >
-              <Image
-                src={block.image}
-                alt={block.title}
-                fill
-                style={{ objectFit: "cover" }}
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 60%)" }} />
-              <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "2rem" }}>
-                <h3 style={{ fontSize: "1.375rem", fontWeight: 700, color: "#fff", marginBottom: "0.5rem" }}>{block.title}</h3>
-                <p style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.8)", lineHeight: 1.6 }}>{block.description}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Prayer CTA */}
-      <section style={{ padding: "5rem 1.5rem", background: "#0a0a0a", textAlign: "center" }}>
-        <p style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: "1rem" }}>
-          Prayer Hub
-        </p>
-        <h2 style={{ fontSize: "clamp(1.5rem, 3vw, 2.25rem)", fontWeight: 700, color: "#fff", marginBottom: "1rem" }}>
-          We&apos;re Believing With You
-        </h2>
-        <p style={{ fontSize: "1rem", color: "rgba(255,255,255,0.7)", maxWidth: 500, margin: "0 auto 2rem", lineHeight: 1.7 }}>
-          Submit a prayer request and our team will stand in agreement with you.
-        </p>
-        <Link
-          href="/next-steps"
-          style={{ border: "1px solid rgba(255,255,255,0.5)", color: "#fff", padding: "0.875rem 2rem", fontWeight: 600, fontSize: "0.9rem", textDecoration: "none", letterSpacing: "0.04em" }}
-        >
-          Submit a Prayer Request
+      {/* ── 4 Content Blocks ── */}
+      <section className="gc-blocks-grid">
+        {/* Plan Your Visit */}
+        <Link href="/next-steps" className="gc-block">
+          <Image
+            src="/images/2500w-164-roc09050-jpg.jpg"
+            alt="Plan Your Visit"
+            fill
+            style={{ objectFit: "cover" }}
+            sizes="(max-width: 640px) 100vw, 50vw"
+          />
+          <div className="gc-block-overlay" />
+          <div className="gc-block-content">
+            <h3 className="gc-block-title">Plan Your Visit</h3>
+            <p className="gc-block-desc">
+              Come experience the warmth of our community. We meet every Sunday at 10am.
+            </p>
+            <span className="gc-block-cta">Plan A Visit &rarr;</span>
+          </div>
         </Link>
+
+        {/* Meet Our Team */}
+        <Link href="/staff-leaders" className="gc-block">
+          <Image
+            src="/images/2500w-184-roc09140-jpg.jpg"
+            alt="Staff and Leaders"
+            fill
+            style={{ objectFit: "cover" }}
+            sizes="(max-width: 640px) 100vw, 50vw"
+          />
+          <div className="gc-block-overlay" />
+          <div className="gc-block-content">
+            <h3 className="gc-block-title">Meet Our Team</h3>
+            <p className="gc-block-desc">
+              Get to know the leaders and team dedicated to serving this community.
+            </p>
+            <span className="gc-block-cta">Our Staff &amp; Leaders &rarr;</span>
+          </div>
+        </Link>
+
+        {/* Our Calendar */}
+        <Link href="/calendar" className="gc-block">
+          <Image
+            src="/images/2500w-200-roc09255-jpg.jpg"
+            alt="Events Calendar"
+            fill
+            style={{ objectFit: "cover" }}
+            sizes="(max-width: 640px) 100vw, 50vw"
+          />
+          <div className="gc-block-overlay" />
+          <div className="gc-block-content">
+            <h3 className="gc-block-title">Our Calendar</h3>
+            <p className="gc-block-desc">
+              See what&apos;s happening — weekly services, special events, and community activities.
+            </p>
+            <span className="gc-block-cta">See What&apos;s Happening &rarr;</span>
+          </div>
+        </Link>
+
+        {/* Get Involved */}
+        <Link href="/next-steps" className="gc-block">
+          <Image
+            src="/images/2500w-202-roc09264-jpg.jpg"
+            alt="Get Involved"
+            fill
+            style={{ objectFit: "cover" }}
+            sizes="(max-width: 640px) 100vw, 50vw"
+          />
+          <div className="gc-block-overlay" />
+          <div className="gc-block-content">
+            <h3 className="gc-block-title">Get Involved</h3>
+            <p className="gc-block-desc">
+              Everyone has something to offer. Discover ministries designed to help you grow.
+            </p>
+            <span className="gc-block-cta">Take Your Next Step &rarr;</span>
+          </div>
+        </Link>
+      </section>
+
+      {/* ── Say Hello / Contact ── */}
+      <section className="gc-section gc-section-dark gc-text-center">
+        <div className="gc-container">
+          <p className="gc-eyebrow gc-eyebrow-dim">Connect With Us</p>
+          <h2 className="gc-section-h2 gc-white">We&apos;d Love to Hear From You</h2>
+          <p className="gc-section-body gc-dim" style={{ maxWidth: 520, margin: "0 auto 2.5rem" }}>
+            Whether you have questions, need prayer, or just want to say hello —
+            reach out and our team will get back to you.
+          </p>
+          <div className="gc-contact-info">
+            <a href="tel:17139280999" className="gc-contact-link">+1 713-928-0999</a>
+            <span className="gc-contact-sep">&middot;</span>
+            <a href="mailto:info@blwgracecity.org" className="gc-contact-link">info@blwgracecity.org</a>
+          </div>
+          <div className="gc-btn-row" style={{ justifyContent: "center", marginTop: "2rem" }}>
+            <Link href="/next-steps" className="gc-btn-white">Say Hello</Link>
+            <Link href="/next-steps" className="gc-btn-outline-white">Get Prayer</Link>
+          </div>
+        </div>
       </section>
     </>
   );

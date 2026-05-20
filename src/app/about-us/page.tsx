@@ -7,65 +7,52 @@ export const metadata: Metadata = { title: "About Us" };
 export default function AboutPage() {
   return (
     <>
-      {/* Page Hero */}
-      <section style={{ background: "#0a0a0a", padding: "5rem 1.5rem", textAlign: "center" }}>
-        <p style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: "1rem" }}>
-          Who We Are
-        </p>
-        <h1 style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", fontWeight: 800, color: "#fff", lineHeight: 1.15 }}>
-          About BLW Grace City
-        </h1>
-      </section>
+      <div className="gc-page-hero">
+        <span className="gc-page-hero-eye">Who We Are</span>
+        <h1 className="gc-page-hero-h1">About BLW Grace City</h1>
+      </div>
 
       {/* Vision & Mission */}
-      <section style={{ padding: "5rem 1.5rem", background: "#fff" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "3rem" }}>
-          <div>
-            <p style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "#9a9a9a", marginBottom: "1rem" }}>
-              Our Vision
-            </p>
-            <h2 style={{ fontSize: "1.75rem", fontWeight: 700, color: "#0a0a0a", marginBottom: "1.25rem", lineHeight: 1.3 }}>
-              A City Set Upon a Hill
-            </h2>
-            <p style={{ fontSize: "1rem", color: "#4a4a4a", lineHeight: 1.8 }}>
-              To take God&apos;s divine presence to the nations and peoples of the world and to demonstrate the character of the Spirit. We are a divine vision, a movement of the Spirit, and a city set upon a hill.
-            </p>
-          </div>
-          <div>
-            <p style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "#9a9a9a", marginBottom: "1rem" }}>
-              Our Mission
-            </p>
-            <h2 style={{ fontSize: "1.75rem", fontWeight: 700, color: "#0a0a0a", marginBottom: "1.25rem", lineHeight: 1.3 }}>
-              Developing Generations
-            </h2>
-            <p style={{ fontSize: "1rem", color: "#4a4a4a", lineHeight: 1.8 }}>
-              To develop generations of men and women who will fulfill God&apos;s purposes — raising a generation for Jesus across 23 US states and beyond, through discipleship, mentorship, and mission.
-            </p>
+      <section className="gc-section gc-section-white">
+        <div className="gc-container">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "3rem" }}>
+            <div>
+              <span className="gc-eyebrow">Our Vision</span>
+              <h2 className="gc-section-h2" style={{ marginBottom: "1rem" }}>A City Set Upon a Hill</h2>
+              <p className="gc-section-body" style={{ margin: 0 }}>
+                To take God&apos;s divine presence to the nations and peoples of the world and to demonstrate
+                the character of the Spirit. We are a divine vision, a movement of the Spirit, and a city set upon a hill.
+              </p>
+            </div>
+            <div>
+              <span className="gc-eyebrow">Our Mission</span>
+              <h2 className="gc-section-h2" style={{ marginBottom: "1rem" }}>Developing Generations</h2>
+              <p className="gc-section-body" style={{ margin: 0 }}>
+                To develop generations of men and women who will fulfill God&apos;s purposes — raising a generation for Jesus
+                across 23 US states and beyond, through discipleship, mentorship, and mission.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Reach stat */}
-      <section style={{ background: "#f7f7f7", padding: "3rem 1.5rem", textAlign: "center" }}>
-        <p style={{ fontSize: "clamp(3rem, 8vw, 6rem)", fontWeight: 800, color: "#0a0a0a", lineHeight: 1 }}>23</p>
-        <p style={{ fontSize: "1.25rem", fontWeight: 600, color: "#4a4a4a", marginTop: "0.5rem" }}>US States Reached</p>
-        <p style={{ fontSize: "0.95rem", color: "#9a9a9a", marginTop: "0.5rem" }}>
-          From Washington to Florida — one Spirit, one mission.
-        </p>
+      <section className="gc-section gc-section-off" style={{ textAlign: "center" }}>
+        <div className="gc-container">
+          <p style={{ fontSize: "clamp(4rem, 12vw, 7rem)", fontWeight: 800, color: "#0a0a0a", lineHeight: 1, margin: 0 }}>23</p>
+          <p style={{ fontSize: "1.25rem", fontWeight: 600, color: "#4a4a4a", marginTop: "0.5rem" }}>US States Reached</p>
+          <p style={{ fontSize: "0.95rem", color: "#9a9a9a", marginTop: "0.5rem" }}>From Washington to Florida — one Spirit, one mission.</p>
+        </div>
       </section>
 
       {/* Core Beliefs */}
-      <section style={{ padding: "5rem 1.5rem", background: "#fff" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+      <section className="gc-section gc-section-white">
+        <div className="gc-container" style={{ maxWidth: 900 }}>
           <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-            <p style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "#9a9a9a", marginBottom: "0.75rem" }}>
-              What We Believe
-            </p>
-            <h2 style={{ fontSize: "clamp(1.75rem, 4vw, 2.5rem)", fontWeight: 700, color: "#0a0a0a" }}>
-              Our Core Beliefs
-            </h2>
+            <span className="gc-eyebrow">What We Believe</span>
+            <h2 className="gc-section-h2">Our Core Beliefs</h2>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "0" }}>
+          <div>
             {beliefs.map((belief, i) => (
               <div
                 key={belief.number}
@@ -97,24 +84,17 @@ export default function AboutPage() {
       </section>
 
       {/* Values Grid */}
-      <section style={{ padding: "5rem 1.5rem", background: "#0a0a0a" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+      <section className="gc-section gc-section-dark">
+        <div className="gc-container">
           <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-            <p style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: "0.75rem" }}>
-              How We Live
-            </p>
-            <h2 style={{ fontSize: "clamp(1.75rem, 4vw, 2.5rem)", fontWeight: 700, color: "#fff" }}>
-              Our Values
-            </h2>
+            <span className="gc-eyebrow gc-eyebrow-dim">How We Live</span>
+            <h2 className="gc-section-h2 gc-white">Our Values</h2>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1.5rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1.25rem" }}>
             {values.map((value) => (
               <div
                 key={value.name}
-                style={{
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  padding: "1.75rem",
-                }}
+                style={{ border: "1px solid rgba(255,255,255,0.1)", padding: "1.75rem" }}
               >
                 <h3 style={{ fontSize: "1.125rem", fontWeight: 700, color: "#fff", marginBottom: "0.625rem" }}>
                   {value.name}

@@ -42,19 +42,14 @@ export default function LivestreamPage() {
 
   return (
     <>
-      {/* Header */}
-      <section style={{ background: "#0a0a0a", padding: "4rem 1.5rem", textAlign: "center" }}>
-        <p style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: "1rem" }}>
-          Grace City Online
-        </p>
-        <h1 style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", fontWeight: 800, color: "#fff", lineHeight: 1.15 }}>
-          Watch Live
-        </h1>
-      </section>
+      <div className="gc-page-hero">
+        <span className="gc-page-hero-eye">Grace City Online</span>
+        <h1 className="gc-page-hero-h1">Watch Live</h1>
+      </div>
 
       {/* Player area */}
-      <section style={{ background: "#111", padding: "2rem 1.5rem" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+      <section style={{ background: "#111", padding: "2rem 0" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 1.25rem" }}>
           {/* Status badge */}
           <div style={{ marginBottom: "1.25rem", display: "flex", alignItems: "center", gap: "0.75rem" }}>
             {data?.status === "live" && (
@@ -98,7 +93,7 @@ export default function LivestreamPage() {
                 `}</Script>
               )}
             </>
-          ) : data?.status !== "none" && !data ? null : (
+          ) : (
             <div style={{
               aspectRatio: "16/9",
               background: "#1a1a1a",
@@ -136,10 +131,10 @@ export default function LivestreamPage() {
 
       {/* Past streams */}
       {data?.past && data.past.length > 0 && (
-        <section style={{ padding: "4rem 1.5rem", background: "#fff" }}>
-          <div style={{ maxWidth: 900, margin: "0 auto" }}>
+        <section className="gc-section gc-section-white">
+          <div className="gc-container" style={{ maxWidth: 900 }}>
             <h3 style={{ fontSize: "1.25rem", fontWeight: 700, color: "#0a0a0a", marginBottom: "2rem" }}>Past Streams</h3>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "1.25rem" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 240px), 1fr))", gap: "1.25rem" }}>
               {data.past.map((s) => {
                 const vid = s.youtube_live_id ?? extractVideoId(s.youtube_url);
                 return (
@@ -171,28 +166,14 @@ export default function LivestreamPage() {
       )}
 
       {/* Join in person CTA */}
-      <section style={{ padding: "4rem 1.5rem", background: "#f7f7f7", textAlign: "center" }}>
-        <h2 style={{ fontSize: "1.75rem", fontWeight: 700, color: "#0a0a0a", marginBottom: "1rem" }}>
-          Better In Person
-        </h2>
-        <p style={{ fontSize: "1rem", color: "#4a4a4a", maxWidth: 500, margin: "0 auto 2rem", lineHeight: 1.7 }}>
-          Nothing replaces the experience of being together. Join us this Sunday at 10am.
-        </p>
-        <Link
-          href="/next-steps"
-          style={{
-            background: "#0a0a0a",
-            color: "#fff",
-            padding: "0.875rem 2rem",
-            fontWeight: 700,
-            fontSize: "0.9rem",
-            textDecoration: "none",
-            letterSpacing: "0.04em",
-            textTransform: "uppercase",
-          }}
-        >
-          Plan a Visit
-        </Link>
+      <section className="gc-section gc-section-off" style={{ textAlign: "center" }}>
+        <div className="gc-container">
+          <h2 className="gc-section-h2">Better In Person</h2>
+          <p className="gc-section-body" style={{ maxWidth: 500, margin: "0 auto 2rem" }}>
+            Nothing replaces the experience of being together. Join us this Sunday at 10am.
+          </p>
+          <Link href="/next-steps" className="gc-btn-dark">Plan a Visit</Link>
+        </div>
       </section>
     </>
   );
