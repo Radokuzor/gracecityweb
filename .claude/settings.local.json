@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la \"c:\\\\Users\\\\radOk\\\\Documents\\\\gracecitywebsite\\\\.\" && echo \"---\" && ls -la \"c:\\\\Users\\\\radOk\\\\Documents\\\\\" | grep -i grace)",
+      "Read(//c/Users/radOk/**)",
+      "Bash(mkdir -p temp_assets)",
+      "Bash(mv *.jpg temp_assets/)",
+      "Bash(mv Grace-Black.png temp_assets/)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --app --src-dir --import-alias \"@/*\" --use-npm --yes)",
+      "Bash(mkdir -p gracecity_temp)",
+      "Bash(cp gracecitywebsite/temp_assets/* gracecity_temp/)",
+      "Bash(npm install *)",
+      "Bash(npx shadcn@latest init --yes --defaults)",
+      "Bash(mkdir -p /c/Users/radOk/Documents/gracecity_build/public/images)",
+      "Bash(cp /c/Users/radOk/Documents/gracecitywebsite/temp_assets/*.jpg /c/Users/radOk/Documents/gracecity_build/public/images/)",
+      "Bash(cp /c/Users/radOk/Documents/gracecitywebsite/temp_assets/Grace-Black.png /c/Users/radOk/Documents/gracecity_build/public/)"
+    ]
+  }
+}
