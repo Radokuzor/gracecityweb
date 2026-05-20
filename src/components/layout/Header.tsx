@@ -46,7 +46,7 @@ export default function Header() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex" style={{ display: "none", gap: "1.75rem", alignItems: "center" }}>
+          <nav className="hidden md:flex" style={{ gap: "1.75rem", alignItems: "center" }}>
             {navLinks.map((link) => (
               <Link
                 key={link.href + link.label}
@@ -58,7 +58,8 @@ export default function Header() {
             ))}
             <Link
               href="/next-steps"
-              style={{ background: "#0a0a0a", color: "#fff", padding: "0.5rem 1.25rem", fontSize: "0.85rem", fontWeight: 700, textDecoration: "none", letterSpacing: "0.04em", textTransform: "uppercase", whiteSpace: "nowrap" }}
+              className="gc-btn-dark"
+              style={{ padding: "0.5rem 1.25rem", fontSize: "0.85rem", minHeight: 40 }}
             >
               Say Hello
             </Link>
@@ -134,6 +135,7 @@ export default function Header() {
                 textAlign: "center",
                 letterSpacing: "0.06em",
                 textTransform: "uppercase",
+                borderRadius: "8px",
               }}
             >
               Say Hello

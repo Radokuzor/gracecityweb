@@ -91,6 +91,7 @@
   text-decoration: none;
   cursor: pointer;
   border: none;
+  border-radius: 8px;
   transition: opacity 0.15s;
   min-height: 48px;
   white-space: nowrap;
@@ -337,6 +338,7 @@ textarea.gc-input { min-height: 120px; resize: vertical; }
   min-height: 52px;
   flex-shrink: 0;
   font-family: inherit;
+  border-radius: 8px;
 }
 .gc-wizard-next {
   flex: 1;
@@ -351,6 +353,7 @@ textarea.gc-input { min-height: 120px; resize: vertical; }
   min-height: 52px;
   transition: opacity 0.15s;
   font-family: inherit;
+  border-radius: 8px;
 }
 .gc-wizard-next:disabled { opacity: 0.35; cursor: not-allowed; }
 .gc-wizard-next:not(:disabled):active { opacity: 0.8; }
