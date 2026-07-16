@@ -36,6 +36,7 @@ function AuthGate({ onAuthed }: { onAuthed: (s: Session) => void }) {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -69,6 +70,11 @@ function AuthGate({ onAuthed }: { onAuthed: (s: Session) => void }) {
       if (error) { setError(error.message); return; }
       if (data.session) onAuthed(data.session);
     } else {
+      if (password !== confirmPassword) {
+        setLoading(false);
+        setError("Passwords do not match.");
+        return;
+      }
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -137,10 +143,16 @@ function AuthGate({ onAuthed }: { onAuthed: (s: Session) => void }) {
             <label style={labelStyle}>Email</label>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required style={inputStyle} />
           </div>
-          <div style={{ marginBottom: "1.25rem" }}>
+          <div style={{ marginBottom: mode === "signup" ? "0.9rem" : "1.25rem" }}>
             <label style={labelStyle}>Password</label>
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required style={inputStyle} />
           </div>
+          {mode === "signup" && (
+            <div style={{ marginBottom: "1.25rem" }}>
+              <label style={labelStyle}>Confirm Password</label>
+              <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required style={inputStyle} />
+            </div>
+          )}
 
           {error && <p style={{ color: "#fca5a5", fontSize: "0.8rem", marginBottom: "1rem" }}>{error}</p>}
 
@@ -166,9 +178,9 @@ function AuthGate({ onAuthed }: { onAuthed: (s: Session) => void }) {
 
         <p style={{ textAlign: "center", fontSize: "0.8rem", color: "rgba(255,255,255,0.6)", marginTop: "1.25rem" }}>
           {mode === "signin" ? (
-            <>New here? <button onClick={() => { setMode("signup"); setError(""); }} style={{ background: "none", border: "none", color: "#fff", fontWeight: 700, cursor: "pointer", padding: 0 }}>Create an account</button></>
+            <>New here? <button onClick={() => { setMode("signup"); setError(""); setConfirmPassword(""); }} style={{ background: "none", border: "none", color: "#fff", fontWeight: 700, cursor: "pointer", padding: 0 }}>Create an account</button></>
           ) : (
-            <>Already have an account? <button onClick={() => { setMode("signin"); setError(""); }} style={{ background: "none", border: "none", color: "#fff", fontWeight: 700, cursor: "pointer", padding: 0 }}>Sign in</button></>
+            <>Already have an account? <button onClick={() => { setMode("signin"); setError(""); setConfirmPassword(""); }} style={{ background: "none", border: "none", color: "#fff", fontWeight: 700, cursor: "pointer", padding: 0 }}>Sign in</button></>
           )}
         </p>
       </div>
@@ -187,6 +199,20 @@ export default function LivestreamPage() {
       .then((r) => r.json())
       .then(setData)
       .catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    const w = window as typeof window & { YT?: { Player: unknown } };
+    if (w.YT?.Player) {
+      setYtReady(true);
+      return;
+    }
+    const w2 = window as typeof window & { onYouTubeIframeAPIReady?: () => void };
+    const prev = w2.onYouTubeIframeAPIReady;
+    w2.onYouTubeIframeAPIReady = () => {
+      prev?.();
+      setYtReady(true);
+    };
   }, []);
 
   useEffect(() => {
@@ -253,11 +279,7 @@ export default function LivestreamPage() {
                 >
                   <div id="yt-player" style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }} />
                 </div>
-                <Script
-                  src="https://www.youtube.com/iframe_api"
-                  strategy="lazyOnload"
-                  onReady={() => setYtReady(true)}
-                />
+                <Script src="https://www.youtube.com/iframe_api" strategy="lazyOnload" />
                 {ytReady && (
                   <Script id="yt-init" strategy="lazyOnload">{`
                     new YT.Player('yt-player', {

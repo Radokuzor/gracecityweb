@@ -4,6 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
+import { createBrowserClient } from "@/lib/supabase";
+import type { Session } from "@supabase/supabase-js";
 
 const navLinks = [
   { label: "Plan a Visit", href: "/next-steps" },
@@ -15,6 +17,7 @@ const navLinks = [
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const [session, setSession] = useState<Session | null>(null);
 
   // Lock body scroll when menu is open
   useEffect(() => {
@@ -26,7 +29,20 @@ export default function Header() {
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
+  useEffect(() => {
+    const supabase = createBrowserClient();
+    supabase.auth.getSession().then(({ data }) => setSession(data.session));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => setSession(s));
+    return () => subscription.unsubscribe();
+  }, []);
+
   const close = () => setOpen(false);
+
+  const signOut = async () => {
+    const supabase = createBrowserClient();
+    await supabase.auth.signOut();
+    close();
+  };
 
   return (
     <>
@@ -141,10 +157,21 @@ export default function Header() {
             >
               Say Hello
             </Link>
-            <div style={{ display: "flex", gap: "1rem", justifyContent: "center", marginTop: "1.25rem" }}>
+            <div style={{ display: "flex", gap: "1rem", justifyContent: "center", alignItems: "center", flexWrap: "wrap", marginTop: "1.25rem" }}>
               <a href="tel:17139280999" style={{ fontSize: "0.85rem", color: "#9a9a9a", textDecoration: "none" }}>+1 713-928-0999</a>
               <span style={{ color: "#e8e8e8" }}>&middot;</span>
               <a href="mailto:info@blwgracecity.org" style={{ fontSize: "0.85rem", color: "#9a9a9a", textDecoration: "none" }}>Email Us</a>
+              {session && (
+                <>
+                  <span style={{ color: "#e8e8e8" }}>&middot;</span>
+                  <button
+                    onClick={signOut}
+                    style={{ background: "none", border: "none", padding: 0, fontSize: "0.85rem", color: "#9a9a9a", textDecoration: "none", cursor: "pointer", fontFamily: "inherit" }}
+                  >
+                    Sign Out
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
