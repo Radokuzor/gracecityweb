@@ -6,7 +6,7 @@ import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import { createBrowserClient } from "@/lib/supabase";
 import type { SupabaseClient, Session } from "@supabase/supabase-js";
-import type { FormSubmission, Livestream, Event } from "@/types";
+import type { FormSubmission, Livestream, Event, Profile } from "@/types";
 import { formatDateTime } from "@/lib/utils";
 
 // Lazy singleton — only created after first user interaction, never at module evaluation time
@@ -479,8 +479,122 @@ function EventsPanel() {
   );
 }
 
+// ── Accounts tab ──────────────────────────────────────────────
+function AccountsPanel({ currentUserId }: { currentUserId: string }) {
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [adminIds, setAdminIds] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(false);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [msg, setMsg] = useState("");
+
+  const fetchAccounts = useCallback(async () => {
+    setLoading(true);
+    const [{ data: profileRows }, { data: adminRows }] = await Promise.all([
+      supabase.from("profiles").select("*").order("created_at", { ascending: false }),
+      supabase.from("admins").select("user_id"),
+    ]);
+    setProfiles((profileRows as Profile[]) ?? []);
+    setAdminIds(new Set(((adminRows as { user_id: string }[]) ?? []).map((r) => r.user_id)));
+    setLoading(false);
+  }, []);
+
+  useEffect(() => { fetchAccounts(); }, [fetchAccounts]);
+
+  const toggleAdmin = async (profile: Profile) => {
+    const isAdmin = adminIds.has(profile.id);
+    if (isAdmin && profile.id === currentUserId) {
+      if (!confirm("This will remove your own admin access. Continue?")) return;
+    }
+    setBusyId(profile.id);
+    setMsg("");
+    if (isAdmin) {
+      const { error } = await supabase.from("admins").delete().eq("user_id", profile.id);
+      if (error) { setMsg("Error: " + error.message); }
+      else setAdminIds((s) => { const next = new Set(s); next.delete(profile.id); return next; });
+    } else {
+      const { error } = await supabase.from("admins").insert({ user_id: profile.id, email: profile.email ?? "" });
+      if (error) { setMsg("Error: " + error.message); }
+      else setAdminIds((s) => new Set(s).add(profile.id));
+    }
+    setBusyId(null);
+  };
+
+  return (
+    <div>
+      {loading ? (
+        <p style={{ color: "#9a9a9a", textAlign: "center", padding: "2rem" }}>Loading...</p>
+      ) : profiles.length === 0 ? (
+        <p style={{ color: "#9a9a9a", textAlign: "center", padding: "3rem" }}>No accounts yet.</p>
+      ) : (
+        <>
+          {msg && <p style={{ fontSize: "0.875rem", color: "#dc2626", marginBottom: "1rem" }}>{msg}</p>}
+          <div style={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #e8e8e8" }}>
+              <thead>
+                <tr>
+                  <th style={th}>Name</th>
+                  <th style={th}>Email</th>
+                  <th style={th}>Phone</th>
+                  <th style={th}>Joined</th>
+                  <th style={th}>Admin</th>
+                  <th style={th}>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {profiles.map((p) => {
+                  const isAdmin = adminIds.has(p.id);
+                  return (
+                    <tr key={p.id}>
+                      <td style={td}><strong>{[p.first_name, p.last_name].filter(Boolean).join(" ") || "—"}</strong></td>
+                      <td style={td}>{p.email}</td>
+                      <td style={td}>{p.phone || "—"}</td>
+                      <td style={{ ...td, whiteSpace: "nowrap", color: "#9a9a9a" }}>{formatDateTime(p.created_at)}</td>
+                      <td style={td}>
+                        <span style={{
+                          display: "inline-block",
+                          padding: "0.2rem 0.6rem",
+                          fontSize: "0.7rem",
+                          fontWeight: 700,
+                          letterSpacing: "0.06em",
+                          textTransform: "uppercase",
+                          background: isAdmin ? "#0a0a0a" : "#f0f0f0",
+                          color: isAdmin ? "#fff" : "#9a9a9a",
+                        }}>
+                          {isAdmin ? "Admin" : "Member"}
+                        </span>
+                      </td>
+                      <td style={td}>
+                        <button
+                          onClick={() => toggleAdmin(p)}
+                          disabled={busyId === p.id}
+                          style={{
+                            background: isAdmin ? "#fee2e2" : "#dcfce7",
+                            color: isAdmin ? "#dc2626" : "#16a34a",
+                            border: "none",
+                            padding: "0.375rem 0.75rem",
+                            fontSize: "0.75rem",
+                            fontWeight: 700,
+                            cursor: busyId === p.id ? "not-allowed" : "pointer",
+                            opacity: busyId === p.id ? 0.6 : 1,
+                          }}
+                        >
+                          {isAdmin ? "Remove Admin" : "Make Admin"}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 // ── Dashboard ─────────────────────────────────────────────────
-type DashTab = "submissions" | "livestreams" | "events";
+type DashTab = "submissions" | "livestreams" | "events" | "accounts";
 
 function Dashboard({ session, onLogout }: { session: Session; onLogout: () => void }) {
   const [tab, setTab] = useState<DashTab>("submissions");
@@ -527,6 +641,7 @@ function Dashboard({ session, onLogout }: { session: Session; onLogout: () => vo
         {tabBtn("submissions", "Form Submissions")}
         {tabBtn("livestreams", "Livestreams")}
         {tabBtn("events", "Events")}
+        {tabBtn("accounts", "Accounts")}
       </div>
 
       {/* Content */}
@@ -535,6 +650,7 @@ function Dashboard({ session, onLogout }: { session: Session; onLogout: () => vo
           {tab === "submissions" && <SubmissionsPanel />}
           {tab === "livestreams" && <LivestreamsPanel />}
           {tab === "events" && <EventsPanel />}
+          {tab === "accounts" && <AccountsPanel currentUserId={session.user.id} />}
         </div>
       </div>
     </div>

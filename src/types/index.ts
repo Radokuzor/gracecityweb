@@ -48,3 +48,12 @@ export interface FormSubmission {
   created_at: string;
   [key: string]: unknown;
 }
+
+export interface Profile {
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
+  phone: string | null;
+  email: string | null;
+  created_at: string;
+}

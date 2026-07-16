@@ -15,10 +15,33 @@ create table public.admins (
 
 alter table public.admins enable row level security;
 
+-- ── Helper: is the current user an admin? ──────────────────────
+-- security definer + bypasses RLS internally, so it's safe to use inside
+-- the admins/profiles policies below without causing infinite recursion.
+create function public.is_admin()
+returns boolean
+language sql
+security definer set search_path = public
+stable
+as $$
+  select exists (select 1 from public.admins where user_id = auth.uid());
+$$;
+
 -- A logged-in user may only check their OWN membership row (not list all admins).
 create policy "admins can read own row"
   on public.admins for select
   using (user_id = auth.uid());
+
+-- Existing admins can see the full allowlist and grant/revoke admin access.
+create policy "admins can read all admin rows"
+  on public.admins for select
+  using (public.is_admin());
+create policy "admins can add admins"
+  on public.admins for insert
+  with check (public.is_admin());
+create policy "admins can remove admins"
+  on public.admins for delete
+  using (public.is_admin());
 
 -- ── Public member profiles (for the sign-up/log-in feature) ────
 create table public.profiles (
@@ -35,6 +58,11 @@ alter table public.profiles enable row level security;
 create policy "users can read own profile"
   on public.profiles for select
   using (id = auth.uid());
+
+-- Admins can see every signed-up account (for the Accounts tab in /admin).
+create policy "admins can read all profiles"
+  on public.profiles for select
+  using (public.is_admin());
 
 create policy "users can update own profile"
   on public.profiles for update
@@ -62,16 +90,6 @@ $$;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
-
--- ── Helper: is the current user an admin? ──────────────────────
-create function public.is_admin()
-returns boolean
-language sql
-security definer set search_path = public
-stable
-as $$
-  select exists (select 1 from public.admins where user_id = auth.uid());
-$$;
 
 -- ── Form submission tables ──────────────────────────────────────
 -- Public inserts go through the service-role key (bypasses RLS) via /api/forms/*,
