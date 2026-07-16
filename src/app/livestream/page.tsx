@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Script from "next/script";
 import Link from "next/link";
+import { createBrowserClient } from "@/lib/supabase";
+import type { Session } from "@supabase/supabase-js";
 import { Livestream } from "@/types";
 import { formatDateTime } from "@/lib/utils";
 
@@ -18,15 +20,167 @@ function extractVideoId(url: string): string | null {
   try {
     const u = new URL(url);
     if (u.hostname.includes("youtu.be")) return u.pathname.slice(1);
+    const pathMatch = u.pathname.match(/^\/(?:live|embed|shorts)\/([^/]+)/);
+    if (pathMatch) return pathMatch[1];
     return u.searchParams.get("v");
   } catch {
     return null;
   }
 }
 
+// ── Sign in / Sign up overlay ───────────────────────────────────
+function AuthGate({ onAuthed }: { onAuthed: (s: Session) => void }) {
+  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const inputStyle: React.CSSProperties = {
+    width: "100%",
+    border: "1px solid rgba(255,255,255,0.2)",
+    background: "rgba(255,255,255,0.08)",
+    color: "#fff",
+    padding: "0.7rem 0.9rem",
+    fontSize: "0.9rem",
+    borderRadius: 8,
+    outline: "none",
+  };
+  const labelStyle: React.CSSProperties = {
+    display: "block",
+    fontSize: "0.75rem",
+    fontWeight: 600,
+    color: "rgba(255,255,255,0.7)",
+    marginBottom: "0.375rem",
+  };
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    const supabase = createBrowserClient();
+
+    if (mode === "signin") {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      setLoading(false);
+      if (error) { setError(error.message); return; }
+      if (data.session) onAuthed(data.session);
+    } else {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { first_name: firstName, last_name: lastName, phone } },
+      });
+      setLoading(false);
+      if (error) { setError(error.message); return; }
+      if (data.session) onAuthed(data.session);
+      else setError("Check your email to confirm your account before signing in.");
+    }
+  };
+
+  return (
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        zIndex: 5,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "1.5rem",
+        background: "rgba(10,10,10,0.6)",
+        backdropFilter: "blur(18px)",
+        WebkitBackdropFilter: "blur(18px)",
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          maxWidth: 380,
+          background: "rgba(20,20,20,0.85)",
+          border: "1px solid rgba(255,255,255,0.12)",
+          borderRadius: 16,
+          padding: "2rem 1.75rem",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
+        }}
+      >
+        <p style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.5)", textAlign: "center", marginBottom: "0.5rem" }}>
+          Grace City Online
+        </p>
+        <h2 style={{ fontSize: "1.375rem", fontWeight: 700, color: "#fff", textAlign: "center", marginBottom: "1.5rem" }}>
+          {mode === "signin" ? "Sign In to Watch" : "Create an Account to Watch"}
+        </h2>
+
+        <form onSubmit={submit}>
+          {mode === "signup" && (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", marginBottom: "0.9rem" }}>
+              <div>
+                <label style={labelStyle}>First Name</label>
+                <input value={firstName} onChange={(e) => setFirstName(e.target.value)} required style={inputStyle} />
+              </div>
+              <div>
+                <label style={labelStyle}>Last Name</label>
+                <input value={lastName} onChange={(e) => setLastName(e.target.value)} required style={inputStyle} />
+              </div>
+            </div>
+          )}
+          {mode === "signup" && (
+            <div style={{ marginBottom: "0.9rem" }}>
+              <label style={labelStyle}>Phone Number</label>
+              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required style={inputStyle} />
+            </div>
+          )}
+          <div style={{ marginBottom: "0.9rem" }}>
+            <label style={labelStyle}>Email</label>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required style={inputStyle} />
+          </div>
+          <div style={{ marginBottom: "1.25rem" }}>
+            <label style={labelStyle}>Password</label>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required style={inputStyle} />
+          </div>
+
+          {error && <p style={{ color: "#fca5a5", fontSize: "0.8rem", marginBottom: "1rem" }}>{error}</p>}
+
+          <button
+            type="submit"
+            disabled={loading}
+            style={{
+              width: "100%",
+              background: "#fff",
+              color: "#0a0a0a",
+              border: "none",
+              borderRadius: 8,
+              padding: "0.8rem",
+              fontWeight: 700,
+              fontSize: "0.9rem",
+              cursor: loading ? "not-allowed" : "pointer",
+              opacity: loading ? 0.7 : 1,
+            }}
+          >
+            {loading ? "Please wait..." : mode === "signin" ? "Sign In" : "Sign Up"}
+          </button>
+        </form>
+
+        <p style={{ textAlign: "center", fontSize: "0.8rem", color: "rgba(255,255,255,0.6)", marginTop: "1.25rem" }}>
+          {mode === "signin" ? (
+            <>New here? <button onClick={() => { setMode("signup"); setError(""); }} style={{ background: "none", border: "none", color: "#fff", fontWeight: 700, cursor: "pointer", padding: 0 }}>Create an account</button></>
+          ) : (
+            <>Already have an account? <button onClick={() => { setMode("signin"); setError(""); }} style={{ background: "none", border: "none", color: "#fff", fontWeight: 700, cursor: "pointer", padding: 0 }}>Sign in</button></>
+          )}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function LivestreamPage() {
   const [data, setData] = useState<StreamResponse | null>(null);
   const [ytReady, setYtReady] = useState(false);
+
+  const [session, setSession] = useState<Session | null | undefined>(undefined);
 
   useEffect(() => {
     fetch("/api/livestreams")
@@ -35,10 +189,18 @@ export default function LivestreamPage() {
       .catch(console.error);
   }, []);
 
+  useEffect(() => {
+    const supabase = createBrowserClient();
+    supabase.auth.getSession().then(({ data }) => setSession(data.session));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => setSession(s));
+    return () => subscription.unsubscribe();
+  }, []);
+
   const stream = data?.stream;
   const videoId = stream
     ? (stream.youtube_live_id ?? extractVideoId(stream.youtube_url))
     : null;
+  const signedIn = !!session;
 
   return (
     <>
@@ -74,44 +236,62 @@ export default function LivestreamPage() {
           </div>
 
           {/* YouTube embed */}
-          {videoId ? (
-            <>
-              <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, overflow: "hidden", background: "#000" }}>
-                <div id="yt-player" style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }} />
+          <div style={{ position: "relative" }}>
+            {videoId ? (
+              <>
+                <div
+                  style={{
+                    position: "relative",
+                    paddingBottom: "56.25%",
+                    height: 0,
+                    overflow: "hidden",
+                    background: "#000",
+                    filter: signedIn ? "none" : "blur(6px)",
+                    transform: signedIn ? "none" : "scale(1.03)",
+                    transition: "filter 0.3s ease",
+                  }}
+                >
+                  <div id="yt-player" style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }} />
+                </div>
+                <Script
+                  src="https://www.youtube.com/iframe_api"
+                  strategy="lazyOnload"
+                  onReady={() => setYtReady(true)}
+                />
+                {ytReady && (
+                  <Script id="yt-init" strategy="lazyOnload">{`
+                    new YT.Player('yt-player', {
+                      videoId: '${videoId}',
+                      playerVars: { autoplay: 1, mute: 1, rel: 0, modestbranding: 1 }
+                    });
+                  `}</Script>
+                )}
+              </>
+            ) : (
+              <div style={{
+                aspectRatio: "16/9",
+                background: "#1a1a1a",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "1rem",
+                filter: signedIn ? "none" : "blur(6px)",
+              }}>
+                <div style={{ width: 64, height: 64, borderRadius: "50%", border: "2px solid rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7L8 5z" fill="rgba(255,255,255,0.5)" />
+                  </svg>
+                </div>
+                <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.9rem" }}>No live stream right now</p>
+                <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "0.8rem" }}>Join us in person — Sundays at 10am</p>
               </div>
-              <Script
-                src="https://www.youtube.com/iframe_api"
-                strategy="lazyOnload"
-                onReady={() => setYtReady(true)}
-              />
-              {ytReady && (
-                <Script id="yt-init" strategy="lazyOnload">{`
-                  new YT.Player('yt-player', {
-                    videoId: '${videoId}',
-                    playerVars: { autoplay: 0, rel: 0, modestbranding: 1 }
-                  });
-                `}</Script>
-              )}
-            </>
-          ) : (
-            <div style={{
-              aspectRatio: "16/9",
-              background: "#1a1a1a",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "1rem",
-            }}>
-              <div style={{ width: 64, height: 64, borderRadius: "50%", border: "2px solid rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                  <path d="M8 5v14l11-7L8 5z" fill="rgba(255,255,255,0.5)" />
-                </svg>
-              </div>
-              <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.9rem" }}>No live stream right now</p>
-              <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "0.8rem" }}>Join us in person — Sundays at 10am</p>
-            </div>
-          )}
+            )}
+
+            {session === undefined ? null : !signedIn && (
+              <AuthGate onAuthed={setSession} />
+            )}
+          </div>
 
           {/* Stream info */}
           {stream && (

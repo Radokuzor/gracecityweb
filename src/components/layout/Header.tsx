@@ -50,6 +50,7 @@ export default function Header() {
               <Link
                 key={link.href + link.label}
                 href={link.href}
+                onClick={close}
                 style={{ fontSize: "0.85rem", fontWeight: 500, color: "#0a0a0a", textDecoration: "none", letterSpacing: "0.01em", whiteSpace: "nowrap" }}
               >
                 {link.label}
@@ -57,6 +58,7 @@ export default function Header() {
             ))}
             <Link
               href="/next-steps"
+              onClick={close}
               className="gc-btn-dark"
               style={{ padding: "0.5rem 1.25rem", fontSize: "0.85rem", minHeight: 40 }}
             >

@@ -544,12 +544,23 @@ function Dashboard({ session, onLogout }: { session: Session; onLogout: () => vo
 // ── Root ──────────────────────────────────────────────────────
 export default function AdminPage() {
   const [session, setSession] = useState<Session | null | undefined>(undefined);
+  const [isAdmin, setIsAdmin] = useState<boolean | undefined>(undefined);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => setSession(s));
     return () => subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!session) { setIsAdmin(undefined); return; }
+    supabase
+      .from("admins")
+      .select("user_id")
+      .eq("user_id", session.user.id)
+      .maybeSingle()
+      .then(({ data }) => setIsAdmin(!!data));
+  }, [session]);
 
   const logout = async () => {
     await supabase.auth.signOut();
@@ -558,5 +569,19 @@ export default function AdminPage() {
 
   if (session === undefined) return null;
   if (!session) return <LoginForm onLogin={setSession} />;
+  if (isAdmin === undefined) return null;
+  if (!isAdmin) {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "#f7f7f7", gap: "1rem", textAlign: "center", padding: "1rem" }}>
+        <p style={{ fontSize: "0.95rem", color: "#4a4a4a" }}>This account does not have admin access.</p>
+        <button
+          onClick={logout}
+          style={{ background: "#0a0a0a", color: "#fff", border: "none", padding: "0.625rem 1.5rem", fontWeight: 700, fontSize: "0.875rem", cursor: "pointer" }}
+        >
+          Sign Out
+        </button>
+      </div>
+    );
+  }
   return <Dashboard session={session} onLogout={logout} />;
 }
