@@ -12,6 +12,7 @@ const navLinks = [
   { label: "About Us", href: "/about-us" },
   { label: "Staff & Leaders", href: "/staff-leaders" },
   { label: "Calendar", href: "/calendar" },
+  { label: "CRM", href: "https://blw-grace-city-production.up.railway.app/login", external: true },
   { label: "Watch Live", href: "/livestream" },
 ];
 
@@ -62,16 +63,28 @@ export default function Header() {
 
           {/* Desktop nav */}
           <nav className="hidden md:flex" style={{ gap: "1.75rem", alignItems: "center" }}>
-            {navLinks.map((link) => (
-              <Link
-                key={link.href + link.label}
-                href={link.href}
-                onClick={close}
-                style={{ fontSize: "0.85rem", fontWeight: 500, color: "#0a0a0a", textDecoration: "none", letterSpacing: "0.01em", whiteSpace: "nowrap" }}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) =>
+              link.external ? (
+                <a
+                  key={link.href + link.label}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ fontSize: "0.85rem", fontWeight: 500, color: "#0a0a0a", textDecoration: "none", letterSpacing: "0.01em", whiteSpace: "nowrap" }}
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <Link
+                  key={link.href + link.label}
+                  href={link.href}
+                  onClick={close}
+                  style={{ fontSize: "0.85rem", fontWeight: 500, color: "#0a0a0a", textDecoration: "none", letterSpacing: "0.01em", whiteSpace: "nowrap" }}
+                >
+                  {link.label}
+                </Link>
+              )
+            )}
             <Link
               href="/next-steps"
               onClick={close}
@@ -113,27 +126,30 @@ export default function Header() {
         >
           {/* Nav links */}
           <nav style={{ flex: 1 }}>
-            {navLinks.map((link, i) => (
-              <Link
-                key={link.href + link.label}
-                href={link.href}
-                onClick={close}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  padding: "1.125rem 1.5rem",
-                  fontSize: "1.125rem",
-                  fontWeight: 600,
-                  color: "#0a0a0a",
-                  textDecoration: "none",
-                  borderBottom: "1px solid #f0f0f0",
-                }}
-              >
-                {link.label}
-                <span style={{ color: "#9a9a9a", fontSize: "1.25rem" }}>&rsaquo;</span>
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const itemStyle: React.CSSProperties = {
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "1.125rem 1.5rem",
+                fontSize: "1.125rem",
+                fontWeight: 600,
+                color: "#0a0a0a",
+                textDecoration: "none",
+                borderBottom: "1px solid #f0f0f0",
+              };
+              return link.external ? (
+                <a key={link.href + link.label} href={link.href} target="_blank" rel="noopener noreferrer" onClick={close} style={itemStyle}>
+                  {link.label}
+                  <span style={{ color: "#9a9a9a", fontSize: "1.25rem" }}>&rsaquo;</span>
+                </a>
+              ) : (
+                <Link key={link.href + link.label} href={link.href} onClick={close} style={itemStyle}>
+                  {link.label}
+                  <span style={{ color: "#9a9a9a", fontSize: "1.25rem" }}>&rsaquo;</span>
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Bottom CTA */}
