@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { X, Check } from "lucide-react";
+import GiveModal from "@/components/give/GiveModal";
 
 // ── Wizard Engine ─────────────────────────────────────────────
 interface Step {
@@ -224,14 +226,28 @@ async function post(path: string, data: Record<string, string>) {
 }
 
 // ── Action Cards ──────────────────────────────────────────────
-type FormKey = "plan-visit" | "connect" | "prayer" | "contact";
+type FormKey = "plan-visit" | "connect" | "prayer" | "contact" | "give";
 
 const cards = [
   { id: "connect" as FormKey, title: "Connect Card", description: "Fill out a connect card to let us know who you are and how we can serve you.", cta: "Fill Out", image: "/images/2500w-164-roc09050-jpg.jpg" },
   { id: "prayer" as FormKey, title: "Get Prayer", description: "Our team is standing in agreement with you. Submit your prayer request here.", cta: "Request Prayer", image: "/images/2500w-184-roc09140-jpg.jpg" },
   { id: "contact" as FormKey, title: "Contact Us", description: "Have a question or want to get in touch? We would love to hear from you.", cta: "Get In Touch", image: "/images/2500w-200-roc09255-jpg.jpg" },
-  { id: null, title: "Give", description: "Support the vision and mission of BLW Grace City through your generous giving.", cta: "Give Now", href: "https://give.tithe.ly/?formId=9a00ab69-6865-11ee-90fc-1260ab546d11", image: "/images/2500w-202-roc09264-jpg.jpg" },
+  { id: "give" as FormKey, title: "Give", description: "Support the vision and mission of BLW Grace City through your generous giving.", cta: "Give Now", image: "/images/2500w-202-roc09264-jpg.jpg" },
 ];
+
+// ── Give return ───────────────────────────────────────────────
+// Some payment methods redirect away; Stripe sends the giver back here with ?give=complete
+function GiveReturn() {
+  const params = useSearchParams();
+  const router = useRouter();
+  if (params.get("give") !== "complete") return null;
+  return (
+    <GiveModal
+      initialSuccess={params.get("redirect_status") === "succeeded"}
+      onClose={() => router.replace("/next-steps", { scroll: false })}
+    />
+  );
+}
 
 // ── Page ──────────────────────────────────────────────────────
 export default function NextStepsPage() {
@@ -299,25 +315,13 @@ export default function NextStepsPage() {
                 <div style={{ padding: "1.375rem", display: "flex", flexDirection: "column", flex: 1 }}>
                   <h3 style={{ fontSize: "1.125rem", fontWeight: 700, color: "#0a0a0a", marginBottom: "0.625rem" }}>{card.title}</h3>
                   <p style={{ fontSize: "0.875rem", color: "#4a4a4a", lineHeight: 1.7, marginBottom: "1.25rem", flex: 1 }}>{card.description}</p>
-                  {card.href ? (
-                    <a
-                      href={card.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="gc-btn-dark"
-                      style={{ alignSelf: "flex-start" }}
-                    >
-                      {card.cta}
-                    </a>
-                  ) : (
-                    <button
-                      onClick={() => card.id && setActiveForm(card.id)}
-                      className="gc-btn-dark"
-                      style={{ alignSelf: "flex-start" }}
-                    >
-                      {card.cta}
-                    </button>
-                  )}
+                  <button
+                    onClick={() => card.id && setActiveForm(card.id)}
+                    className="gc-btn-dark"
+                    style={{ alignSelf: "flex-start" }}
+                  >
+                    {card.cta}
+                  </button>
                 </div>
               </div>
             ))}
@@ -356,6 +360,12 @@ export default function NextStepsPage() {
           successMsg="Your prayer request has been received. Our team is believing with you in faith."
         />
       )}
+      {activeForm === "give" && (
+        <GiveModal onClose={closeForm} />
+      )}
+      <Suspense fallback={null}>
+        <GiveReturn />
+      </Suspense>
       {activeForm === "contact" && (
         <Wizard
           title="Contact Us"

@@ -378,6 +378,30 @@ textarea.gc-input { min-height: 120px; resize: vertical; }
 .gc-choice-btn.selected { border-color: #0a0a0a; background: #0a0a0a; color: #fff; }
 .gc-choice-btn:not(.selected):hover { border-color: #0a0a0a; }
 
+/* ── Give (Stripe) ── */
+.gc-give-presets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.625rem; margin-bottom: 0.75rem; }
+.gc-give-preset { justify-content: center; font-weight: 700; padding: 1rem 0.5rem; }
+.gc-give-custom { position: relative; display: block; }
+.gc-give-currency {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #9a9a9a;
+  pointer-events: none;
+}
+.gc-give-secure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  margin-top: 1.5rem;
+  font-size: 0.75rem;
+  color: #9a9a9a;
+}
+
 .gc-wizard-success {
   display: flex;
   flex-direction: column;
