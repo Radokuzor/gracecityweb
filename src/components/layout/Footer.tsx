@@ -8,6 +8,7 @@ const footerLinks = [
   { label: "Calendar", href: "/calendar" },
   { label: "Watch Live", href: "/livestream" },
   { label: "Get Involved", href: "/next-steps" },
+  { label: "CRM", href: "https://blw-grace-city-production.up.railway.app/login", external: true },
 ];
 
 const socials = [
@@ -96,15 +97,27 @@ export default function Footer() {
             Quick Links
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.625rem" }}>
-            {footerLinks.map((link) => (
-              <Link
-                key={link.href + link.label}
-                href={link.href}
-                style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.7)", textDecoration: "none" }}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {footerLinks.map((link) =>
+              link.external ? (
+                <a
+                  key={link.href + link.label}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.7)", textDecoration: "none" }}
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <Link
+                  key={link.href + link.label}
+                  href={link.href}
+                  style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.7)", textDecoration: "none" }}
+                >
+                  {link.label}
+                </Link>
+              )
+            )}
           </div>
         </div>
 
