@@ -8,7 +8,11 @@ const footerLinks = [
   { label: "Calendar", href: "/calendar" },
   { label: "Watch Live", href: "/livestream" },
   { label: "Get Involved", href: "/next-steps" },
-  { label: "CRM", href: "https://blw-grace-city-production.up.railway.app/login", external: true },
+];
+
+const resourceLinks = [
+  { label: "CRM", href: "https://blw-grace-city-production.up.railway.app/login" },
+  { label: "Finance Portal", href: "https://blwgcfc.base44.app/login?from_url=https%3A%2F%2Fblwgcfc.base44.app%2F" },
 ];
 
 const socials = [
@@ -97,27 +101,35 @@ export default function Footer() {
             Quick Links
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.625rem" }}>
-            {footerLinks.map((link) =>
-              link.external ? (
-                <a
-                  key={link.href + link.label}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.7)", textDecoration: "none" }}
-                >
-                  {link.label}
-                </a>
-              ) : (
-                <Link
-                  key={link.href + link.label}
-                  href={link.href}
-                  style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.7)", textDecoration: "none" }}
-                >
-                  {link.label}
-                </Link>
-              )
-            )}
+            {footerLinks.map((link) => (
+              <Link
+                key={link.href + link.label}
+                href={link.href}
+                style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.7)", textDecoration: "none" }}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Resources */}
+        <div>
+          <p style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: "1rem" }}>
+            Resources
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.625rem" }}>
+            {resourceLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.7)", textDecoration: "none" }}
+              >
+                {link.label}
+              </a>
+            ))}
           </div>
         </div>
 
