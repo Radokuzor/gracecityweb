@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { createBrowserClient } from "@/lib/supabase";
 import type { Session } from "@supabase/supabase-js";
+import { useGive } from "@/components/give/GiveProvider";
 
 const navLinks = [
   { label: "Plan a Visit", href: "/next-steps" },
@@ -18,6 +19,7 @@ const navLinks = [
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
+  const openGive = useGive();
 
   // Lock body scroll when menu is open
   useEffect(() => {
@@ -80,18 +82,33 @@ export default function Header() {
             >
               Say Hello
             </Link>
+            <button
+              onClick={() => { close(); openGive(); }}
+              className="gc-btn-outline-dark"
+              style={{ padding: "0.5rem 1.25rem", fontSize: "0.85rem", minHeight: 40, fontFamily: "inherit" }}
+            >
+              Give
+            </button>
           </nav>
 
-          {/* Mobile hamburger */}
-          <button
-            onClick={() => setOpen(!open)}
-            className="md:hidden"
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            style={{ background: "none", border: "none", cursor: "pointer", padding: "0.5rem", display: "flex", alignItems: "center", justifyContent: "center", minWidth: 44, minHeight: 44 }}
-          >
-            {open ? <X size={22} strokeWidth={2.5} /> : <Menu size={22} strokeWidth={2.5} />}
-          </button>
+          {/* Mobile give + hamburger */}
+          <div className="flex md:hidden" style={{ alignItems: "center", gap: "0.25rem" }}>
+            <button
+              onClick={() => { close(); openGive(); }}
+              className="gc-btn-dark"
+              style={{ padding: "0.5rem 1rem", fontSize: "0.8rem", minHeight: 36, fontFamily: "inherit" }}
+            >
+              Give
+            </button>
+            <button
+              onClick={() => setOpen(!open)}
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              style={{ background: "none", border: "none", cursor: "pointer", padding: "0.5rem", display: "flex", alignItems: "center", justifyContent: "center", minWidth: 44, minHeight: 44 }}
+            >
+              {open ? <X size={22} strokeWidth={2.5} /> : <Menu size={22} strokeWidth={2.5} />}
+            </button>
+          </div>
         </div>
       </header>
 

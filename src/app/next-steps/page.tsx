@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { X, Check } from "lucide-react";
 import GiveModal from "@/components/give/GiveModal";
+import { useGive } from "@/components/give/GiveProvider";
 
 // ── Wizard Engine ─────────────────────────────────────────────
 interface Step {
@@ -253,6 +254,8 @@ function GiveReturn() {
 export default function NextStepsPage() {
   const [activeForm, setActiveForm] = useState<FormKey | null>(null);
 
+  const openGive = useGive();
+
   const closeForm = () => setActiveForm(null);
 
   return (
@@ -316,7 +319,7 @@ export default function NextStepsPage() {
                   <h3 style={{ fontSize: "1.125rem", fontWeight: 700, color: "#0a0a0a", marginBottom: "0.625rem" }}>{card.title}</h3>
                   <p style={{ fontSize: "0.875rem", color: "#4a4a4a", lineHeight: 1.7, marginBottom: "1.25rem", flex: 1 }}>{card.description}</p>
                   <button
-                    onClick={() => card.id && setActiveForm(card.id)}
+                    onClick={() => (card.id === "give" ? openGive() : setActiveForm(card.id))}
                     className="gc-btn-dark"
                     style={{ alignSelf: "flex-start" }}
                   >
@@ -359,9 +362,6 @@ export default function NextStepsPage() {
           successTitle="We're praying with you."
           successMsg="Your prayer request has been received. Our team is believing with you in faith."
         />
-      )}
-      {activeForm === "give" && (
-        <GiveModal onClose={closeForm} />
       )}
       <Suspense fallback={null}>
         <GiveReturn />

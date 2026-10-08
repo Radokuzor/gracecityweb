@@ -487,3 +487,30 @@ textarea.gc-input { min-height: 120px; resize: vertical; }
   white-space: nowrap;
   border-width: 0;
 }
+
+/* ── Floating Give button ── */
+.gc-give-fab {
+  position: fixed;
+  right: max(1.25rem, env(safe-area-inset-right));
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
+  z-index: 38;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.375rem;
+  min-height: 48px;
+  background: #0a0a0a;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.gc-give-fab:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3); }
+.gc-give-fab:active { transform: translateY(0); opacity: 0.85; }

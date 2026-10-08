@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import GiveProvider from "@/components/give/GiveProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -34,9 +35,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-        <Header />
-        <main style={{ flex: 1 }}>{children}</main>
-        <Footer />
+        <GiveProvider>
+          <Header />
+          <main style={{ flex: 1 }}>{children}</main>
+          <Footer />
+        </GiveProvider>
       </body>
     </html>
   );
